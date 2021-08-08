@@ -19,7 +19,7 @@ app.use(express.static("./public"));
 require('./routes/htmlRoutes')(app);
 require('./routes/apiRoutes')(app);
 
-//return to index page if html route does not match above routes
+//default route for invalid requests
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../public/index.html')));
 
 //start server
