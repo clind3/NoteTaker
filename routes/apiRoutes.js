@@ -1,9 +1,11 @@
-//Load data
+//Load data and import necessary modules
 const fs = require('fs');
 const path = require('path');
 const noteJSON = require('../db/db.json');
 const { v4: uuidv4 } = require("uuid");
-let noteData = [];
+
+//retrieve data from db.json file
+let noteData = JSON.parse(fs.readFileSync(noteJSON), 'utf8');
 
 //API ROUTING
 module.exports = (app) => {
@@ -12,11 +14,16 @@ module.exports = (app) => {
 
     //Saving notes
     app.post('/api/notes', (req, res) => {
+        //access client new note data
         let note = req.body;
+
+        //create unique id
         note.id = uuidv4();
         // console.log(note);
+
         noteData.push(note);
-        writeNotes(noteData)
+        //add note data to db.json file
+        writeNotes(noteData);
         res.send(noteData);
     });
 
@@ -28,15 +35,18 @@ module.exports = (app) => {
                 noteData.splice(i, 1);
             }
         };
+        //update db.json file
         writeNotes(noteData);
         res.end();
     });
 
+    //function to update db.json file
     function writeNotes(noteData) {
-        fs.writeFile(
-            path.join(__dirname, '../db/db.JSON'),
+        fs.writeFileSync(
+            path.join(__dirname, noteJSON),
             JSON.stringify(noteData),
             (err) => (err ? console.err(err) : console.log('Note Updated!'))
         );
+        res.json(noteData);
     }
 }

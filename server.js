@@ -1,18 +1,25 @@
+/*
+    INITIALIZE SERVER
+*/
+
+//import express and path modules
 const express = require('express');
 const path = require('path');
 
+//set up express to handle data and create PORT for server
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-//set up express to handle data
+//incorporate middleware
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static("./public"));
 
-//Routes
+//call routes
 require('./routes/htmlRoutes')(app);
 require('./routes/apiRoutes')(app);
 
+//return to index page if html route does not match above routes
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../public/index.html')));
 
 //start server
