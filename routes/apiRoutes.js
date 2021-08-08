@@ -1,11 +1,10 @@
 //Load data and import necessary modules
 const fs = require('fs');
 const path = require('path');
-const noteJSON = require('../db/db.json');
 const { v4: uuidv4 } = require("uuid");
 
 //retrieve data from db.json file
-let noteData = JSON.parse(fs.readFileSync(noteJSON), 'utf8');
+let noteData = JSON.parse(fs.readFileSync('./db/db.json'), 'utf8');
 
 //API ROUTING
 module.exports = (app) => {
@@ -43,7 +42,7 @@ module.exports = (app) => {
     //function to update db.json file
     function writeNotes(noteData) {
         fs.writeFileSync(
-            path.join(__dirname, noteJSON),
+            path.join(__dirname, './db/db.json'),
             JSON.stringify(noteData),
             (err) => (err ? console.err(err) : console.log('Note Updated!'))
         );
