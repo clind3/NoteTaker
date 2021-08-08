@@ -3,11 +3,12 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require("uuid");
 
-//retrieve data from db.json file
-let noteData = JSON.parse(fs.readFileSync('./db/db.json'), 'utf8');
-
 //API ROUTING
 module.exports = (app) => {
+    //retrieve data from db.json file
+    let noteData = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
+    console.log('noteData');
+
     //Getting json note data
     app.get('/api/notes', (req, res) => res.json(noteData));
 
@@ -23,14 +24,14 @@ module.exports = (app) => {
         noteData.push(note);
         //add note data to db.json file
         writeNotes(noteData);
-        res.send(noteData);
+        res.json(noteData);
     });
 
     //deleting identified note
-    app.delete('/api/notes/:id', (req,res) => {
+    app.delete('/api/notes/:id', (req, res) => {
         const chosenId = req.params.id;
-        for(let i = 0; i < noteData.length; i++) {
-            if(noteData[i].id === chosenId ) {
+        for (let i = 0; i < noteData.length; i++) {
+            if (noteData[i].id === chosenId) {
                 noteData.splice(i, 1);
             }
         };
@@ -41,11 +42,9 @@ module.exports = (app) => {
 
     //function to update db.json file
     function writeNotes(noteData) {
-        fs.writeFileSync(
-            path.join(__dirname, './db/db.json'),
+        fs.writeFileSync('./db/db.json',
             JSON.stringify(noteData),
             (err) => (err ? console.err(err) : console.log('Note Updated!'))
         );
-        res.json(noteData);
     }
 }
